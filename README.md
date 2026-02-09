@@ -1,4 +1,4 @@
-### Requisitos
+# Requisitos
 
 - Node.js 22 ou superior - Conferir a versão: node -v
 
@@ -95,4 +95,18 @@ Adicionar todos os arquivos modificados no staging area - área de preparação.
 
 ```
 git add .
+```
+
+commit representa um conjunto de alterações em um ponto específico da história do seu projeto, registra apenas as alterações adicionadas ao índice de preparação.
+o comando -m permite que insira a mensagem de commit diretamente na linha de comando.
+
+```
+git commit -m "Descrição do commit"
+```
+
+Enviar os commits locais para um repositório remoto.
+
+```
+git push <remote> <branch>
+git push origin <branch>
 ```
