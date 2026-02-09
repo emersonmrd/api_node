@@ -1,6 +1,7 @@
 # Requisitos
 
 - Node.js 22 ou superior - Conferir a versão: node -v
+- MySQL 8 ou superior - conferir a versão: mysql --version
 
 ## Como rodar o projeto baixado
 
@@ -73,6 +74,12 @@ Compilar o arquivo TypeScript. Executar o arquivo gerado.
 npm run start:watch
 ```
 
+Iniciar o MySQL instalado no sistema operacional com PowerShell.
+
+```
+net start msysql80
+```
+
 ## Como enviar e baixar os arquivos do GitHub
 
 Baixar os arquivos do Git
@@ -112,7 +119,8 @@ git commit -m "Descrição do commit"
 
 Enviar os commits locais para um repositório remoto.
 
-```
+````
 git push <remote> <branch>
 git push origin <branch>
-```
+``` push origin <branch>
+````
