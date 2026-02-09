@@ -68,16 +68,52 @@ Instalar a dependência para rodar processo simultaneamente.
 npm install --save-dev concurrently
 ```
 
-Compilar o arquivo TypeScript. Executar o arquivo gerado.
-
-```
-npm run start:watch
-```
-
 Iniciar o MySQL instalado no sistema operacional com PowerShell.
 
 ```
 net start msysql80
+```
+
+Comando SQL para criar a base de dados.
+
+```
+CREATE DATABASE celke CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+Instalar a dependência para conectar o Node.js (TypeScript) com banco de dados.
+
+```
+npm install typeorm --save
+```
+
+Biblioteca utilizada no TypeScript para adicionar metadados (informações adicionais) a classes.
+
+```
+npm install reflect-metadata --save
+```
+
+Instalar o drive do banco de dados MySQL
+
+```
+npm install msysql2 --save
+```
+
+Manipular variáveis de ambiente.
+
+```
+npm install dotenv --save
+```
+
+Instalar os tipos do TypeScript.
+
+```
+npm install --save-dev @types/dotenv
+```
+
+Compilar o arquivo TypeScript. Executar o arquivo gerado.
+
+```
+npm run start:watch
 ```
 
 ## Como enviar e baixar os arquivos do GitHub
@@ -119,8 +155,9 @@ git commit -m "Descrição do commit"
 
 Enviar os commits locais para um repositório remoto.
 
-````
+`````
 git push <remote> <branch>
 git push origin <branch>
 ``` push origin <branch>
-````
+````push origin <branch>
+`````
