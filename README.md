@@ -13,7 +13,7 @@ npm install
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```
-npm run dev
+npm run start:watch
 ```
 
 ## Sequencia para criar o projeto
@@ -61,16 +61,16 @@ Executar o arquivo gerado com o Node.js
 node dist/index.js
 ```
 
-Instalar a dependência de forma global, "-g" significa globalmente. Executar o comando através do prompt de comando, executar somente se nunca instalou a dependência na máquina, após instalar, reiniciar o PC.
+Instalar a dependência para rodar processo simultaneamente.
 
 ```
-npm install -g nodemon
+npm install --save-dev concurrently
 ```
 
-Compilar o arquivo TypeScript com Nodemon. Executar o arquivo gerado.
+Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```
-npm run dev
+npm run start:watch
 ```
 
 ## Como enviar e baixar os arquivos do GitHub

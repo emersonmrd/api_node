@@ -9,8 +9,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "build-and-run": "npm run build && npm run start",
-    "dev": "nodemon",
+    "watch": "tsc --watch",
+    "start:watch": "concurrently \"npm run watch\" \"node --watch dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.2",
+    "concurrently": "^9.2.1",
     "ts-node": "^10.9.2"
   }
 }

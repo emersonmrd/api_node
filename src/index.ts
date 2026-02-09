@@ -7,7 +7,7 @@ const app = express();
 
 // Criar a rota GET principal
 app.get("/", (req: Request, res: Response) => {
-  res.send("Bem-vindo celke!");
+  res.send("Bem-vindo Celke!");
 });
 
 // Iniciar o servidor na porta 8080
