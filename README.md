@@ -67,7 +67,7 @@ Instalar a dependência de forma global, "-g" significa globalmente. Executar o 
 npm install -g nodemon
 ```
 
-Compilar o arquivo TypeScript. Executar o arquivo gerado.
+Compilar o arquivo TypeScript com Nodemon. Executar o arquivo gerado.
 
 ```
 npm run dev
