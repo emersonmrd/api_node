@@ -1,3 +1,6 @@
+// Importar a biblioteca variáveis de ambiente
+import "dotenv/config";
+
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 
@@ -15,5 +18,5 @@ export const AppDataSource = new DataSource({
   logging: true,
   entities: [],
   subscribers: [],
-  migrations: [],
+  migrations: ["./dist/migration/*.js"],
 });
