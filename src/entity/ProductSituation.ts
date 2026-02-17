@@ -1,14 +1,13 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import type { Product } from "./Product.js";
 
-import { User } from "./User.js";
-
-@Entity("situations")
-export class Situation {
+@Entity("product_situations")
+export class ProductSituation {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "varchar" })
-  nameSituation!: string;
+  @Column()
+  name!: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt!: Date;
@@ -20,6 +19,7 @@ export class Situation {
   })
   updatedAt!: Date;
 
-  @OneToMany(() => User, (user) => user.situation)
-  users!: User[];
+  // Use strings ao invés de classes
+  @OneToMany("Product", "product")
+  products!: Product[];
 }

@@ -5,24 +5,23 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Situation } from "./Situation";
-// Import da entidade Situation
+
+import { Situation } from "./Situation.js";
 
 @Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ type: "varchar" })
   name!: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", unique: true })
   email!: string;
 
-  // Relacionamento ManyToOne com a tabela situations
   @ManyToOne(() => Situation, (situation) => situation.users)
-  @JoinColumn({ name: "situationId" }) // Nome da chave estrangeira
-  situation!: Situation;
+  @JoinColumn({ name: "situationId" })
+  situation!: any; // evita metadata circular
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt!: Date;

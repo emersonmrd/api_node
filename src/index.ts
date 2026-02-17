@@ -1,17 +1,22 @@
 // Importar a biblioteca variáveis de ambiente
 import "dotenv/config";
-
 // Importar a biblioteca Express
 import express from "express";
 
 // Incluir as CONTROLLERS
-import login from "./controllers/login.js";
+import AuthController from "./controllers/AuthController.js";
+import ProductCategoriesController from "./controllers/ProductCategoriesController.js";
+import ProductSituationsController from "./controllers/ProductSituationsController.js";
+import SituationsController from "./controllers/SituationsController.js";
 
 // Criar a aplicação Express
 const app = express();
 
 // Criar as rotas
-app.use("/", login);
+app.use("/", AuthController);
+app.use("/", SituationsController);
+app.use("/", ProductCategoriesController);
+app.use("/", ProductSituationsController);
 
 // Iniciar o servidor na porta definida na variável de ambiente
 const app_porta = process.env.APP_PORT;

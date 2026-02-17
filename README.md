@@ -5,10 +5,19 @@
 
 ## Como rodar o projeto baixado
 
+Duplicar o arquivo ".env.example" e renomear para ".env".<br>
+Alterar no arquivo .env as credenciais do banco de dados<br>
+
 Instalar todas as dependencias indicadas pelo package.json.
 
 ```
 npm install
+```
+
+Executar as migrations para criar as tabelas no banco de dados.
+
+```
+npx typeorm migration:run -d dist/data-source.js
 ```
 
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
@@ -171,9 +180,10 @@ git commit -m "Descrição do commit"
 
 Enviar os commits locais para um repositório remoto.
 
-````
+`````
 git push <remote> <branch>
 git push origin <branch>
 ``` push <remote> <branch>
 git push origin <branch>
-````
+````push origin <branch>
+`````
