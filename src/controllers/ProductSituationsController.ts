@@ -8,17 +8,50 @@ import { ProductSituation } from "../entity/ProductSituation.js";
 // Criar a aplicação Express
 const router = express.Router();
 
-// Criar a rota GET principal
+// Criar a rota apra lsitar as situações dos produtos
+// Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/product-situations
 router.get("/product-situations", async (req: Request, res: Response) => {
   try {
+    // Obter o repositório da entidade ProductSituation
+    const productSituationRepository =
+      AppDataSource.getRepository(ProductSituation);
+
+    // Recupera todas as situações do banco
+    const productSituations = await productSituationRepository.find();
+
+    // Retorna as situações como resposta
+    res.status(200).json(productSituations);
+    return;
+  } catch (error) {
+    res.status(500).json({
+      // Retornar erro em caso de falha
+      //console.log(error);
+      message: "Erro ao cadastrar a situação!",
+    });
+    return;
+  }
+});
+
+// Criar a rota para cadastrar as situações dos produtos
+// Endereço para acessar a api através da aplicação externa com o verbo POST: http://localhost:8080/product-situations
+// A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
+//Dados em formato de objeto
+/*
+{
+  "name": "Ativo",
+}
+*/
+router.post("/product-situations", async (req: Request, res: Response) => {
+  try {
+    // Receber os dados enviados no corpo da requisição
+    var data = req.body;
+
     // Criar uma instância do repositório de ProductCategory
     const productSituationRepository =
       AppDataSource.getRepository(ProductSituation);
 
     // Criar um novo registro de situação (dados simulados)
-    const newProductSituation = productSituationRepository.create({
-      name: "Ativo", // Valor para simular o cadastro
-    });
+    const newProductSituation = productSituationRepository.create(data);
 
     // Salvar o registro no banco
     await productSituationRepository.save(newProductSituation);
@@ -30,7 +63,7 @@ router.get("/product-situations", async (req: Request, res: Response) => {
     });
   } catch (error) {
     // Retornar erro em caso de falha
-    console.log(error);
+    //console.log(error);
     res.status(500).json({
       message: "Erro ao cadastrar a situação!",
     });

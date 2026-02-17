@@ -12,6 +12,9 @@ import SituationsController from "./controllers/SituationsController.js";
 // Criar a aplicação Express
 const app = express();
 
+// Criar o middleware para receber os dados no corpo da requisição
+app.use(express.json());
+
 // Criar as rotas
 app.use("/", AuthController);
 app.use("/", SituationsController);
