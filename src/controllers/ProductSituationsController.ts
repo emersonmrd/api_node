@@ -8,7 +8,7 @@ import { ProductSituation } from "../entity/ProductSituation.js";
 // Criar a aplicação Express
 const router = express.Router();
 
-// Criar a rota apra lsitar as situações dos produtos
+// Criar a rota para lista as situações dos produtos
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/product-situations
 router.get("/product-situations", async (req: Request, res: Response) => {
   try {
@@ -26,11 +26,50 @@ router.get("/product-situations", async (req: Request, res: Response) => {
     res.status(500).json({
       // Retornar erro em caso de falha
       //console.log(error);
-      message: "Erro ao cadastrar a situação!",
+      message: "Erro ao listar a situação dos produtos!",
     });
     return;
   }
 });
+
+// Rota para visualizar uma situação específica
+// Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/product-situations/:id
+router.get(
+  "/product-situations/:id",
+  async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      // Obter o ID da situação a partir dos parâmetros da requisição
+      const { id } = req.params;
+
+      // Obter o repositório da entidade ProductSituation
+      const productSituationRepository =
+        AppDataSource.getRepository(ProductSituation);
+
+      // Buscar a situação no banco de dados pelo ID
+      const productSituation = await productSituationRepository.findOneBy({
+        id: parseInt(id),
+      });
+
+      // Verificar se a situação foi encontrada
+      if (!productSituation) {
+        res.status(404).json({
+          message: "Situação do produto não encontrada",
+        });
+        return;
+      }
+
+      // Retornar a situação encontrada
+      res.status(200).json(productSituation);
+    } catch (error) {
+      res.status(500).json({
+        // Retornar erro em caso de falha
+        //console.log(error);
+        message: "Erro ao listar a situação do produto!",
+      });
+      return;
+    }
+  },
+);
 
 // Criar a rota para cadastrar as situações dos produtos
 // Endereço para acessar a api através da aplicação externa com o verbo POST: http://localhost:8080/product-situations
@@ -69,6 +108,62 @@ router.post("/product-situations", async (req: Request, res: Response) => {
     });
   }
 });
+
+// Criar a rota para editar uma situação específica
+// Endereço para acessar a API através da aplicação externa com o verbo PUT: http://localhost:8080/product-situations/:id
+// A aplicação externa deve indicar que está enviado os dados em formato de objeto: Content-Type: application/json
+// Dados em formato de objeto
+/*
+{
+    "name": "Ativo"
+}
+*/
+router.put(
+  "/product-situations/:id",
+  async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      // Obter o ID da situação a partir dos parâmetros da requisição
+      const { id } = req.params;
+
+      // Receber os dados enviados no corpo da requisição
+      const data = req.body;
+
+      // Criar uma instância do repositório de ProductSituation
+      const productSituationRepository =
+        AppDataSource.getRepository(ProductSituation);
+
+      // Buscar a situação de produto no banco de dados pelo ID
+      const productSituation = await productSituationRepository.findOneBy({
+        id: parseInt(id),
+      });
+
+      //Verificar se a situação foi encontrada
+      if (!productSituation) {
+        res.status(404).json({ message: "Situação não encontrada!" });
+        return;
+      }
+
+      // Atualizar os dados da situação
+      productSituationRepository.merge(productSituation, data);
+
+      // Salvar as alterações no banco de dados
+      const updatedProductSituation =
+        await productSituationRepository.save(productSituation);
+
+      // Retornar resposta de sucesso
+      res.status(200).json({
+        message: "Situação do produto atualizada com sucesso!",
+        situation: updatedProductSituation,
+      });
+    } catch (error) {
+      // Retornar erro em caso de falha
+      //console.log(error);
+      res.status(500).json({
+        message: "Erro ao atualizar a situação do produto!",
+      });
+    }
+  },
+);
 
 // Exportar a instrução que está dentro da constante router
 export default router;
