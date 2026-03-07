@@ -178,12 +178,15 @@ o comando -m permite que insira a mensagem de commit diretamente na linha de com
 git commit -m "Descrição do commit"
 ```
 
+Adicionar um repositório remoto
+
+```
+git remote add origin <REMOTE_URL>
+```
+
 Enviar os commits locais para um repositório remoto.
 
-`````
+```
 git push <remote> <branch>
 git push origin <branch>
-``` push <remote> <branch>
-git push origin <branch>
-````push origin <branch>
-`````
+```

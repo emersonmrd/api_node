@@ -165,5 +165,51 @@ router.put(
   },
 );
 
+// Criar a rota para apagar uma situação
+// Endereço para acessar a API através da aplicação externa com o verbo DELETE: http://localhost:8080/product-situations/:id
+
+router.delete(
+  "/product-situations/:id",
+  async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      // Obter o ID da situação do produto a partir dos parâmetros da requisição
+
+      const { id } = req.params;
+
+      // Obter o repositório da entidade ProductSituations
+
+      const productSituationRepository =
+        AppDataSource.getRepository(ProductSituation);
+
+      // Buscar a situação produto no banco de dados pelo ID
+
+      const productSituation = await productSituationRepository.findOneBy({
+        id: parseInt(id),
+      });
+
+      // Verificar se a situação produto foi encontrada
+
+      if (!productSituation) {
+        res.status(404).json({ message: "Situação não encontrada!" });
+        return;
+      }
+
+      // Remover a situação produto do banco de dados
+      await productSituationRepository.remove(productSituation);
+
+      // Retornar resposta de sucesso
+      res.status(200).json({
+        message: "Situação apagada com sucesso!",
+      });
+    } catch (error) {
+      // Retornar erro em caso de falha
+      //console.log(error);
+      res
+        .status(500)
+        .json({ message: "Erro ao apagar a situação do produto!" });
+    }
+  },
+);
+
 // Exportar a instrução que está dentro da constante router
 export default router;
