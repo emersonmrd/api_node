@@ -4,12 +4,13 @@ import express, { Request, Response } from "express";
 import { AppDataSource } from "../data-source.js";
 // Improtar a entidade situation
 import { ProductCategory } from "../entity/ProductCategory.js";
+import { PaginationService } from "../services/PaginationService.js";
 
 // Criar a aplicação Express
 const router = express.Router();
 
 // Criar a rota para listar as categorias dos produtos
-// Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/product-categories
+// Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/product-categories?page=1&limit=1
 router.get("/product-categories", async (req: Request, res: Response) => {
   try {
     // Obter o repositório da entidade ProductCategory
@@ -20,47 +21,18 @@ router.get("/product-categories", async (req: Request, res: Response) => {
     const page = Number(req.query.page) || 1;
 
     // Definir o limite de registros por página
-    const limit = 40;
+    const limit = Number(req.query.limit) || 10;
 
-    // Contar o total de registros no banco de dados
-    const totalProductCategories = await productCategoryRepository.count();
-
-    // Verificar se existem registros
-    if (totalProductCategories === 0) {
-      res.status(400).json({
-        message: "Nenhuma categoria de produto encontrada!",
-      });
-      return;
-    }
-
-    // Calcular a última página
-    const lastPage = Math.ceil(totalProductCategories / limit);
-
-    // Verificar se a página solicitada é valida
-    if (page > lastPage) {
-      res.status(400).json({
-        message: `Página inválida. O total de página é ${lastPage}`,
-      });
-      return;
-    }
-
-    // Calcular o offset (a patir de qual registro começar a busca)
-    const offset = (page - 1) * limit;
-
-    // Recupera as situações do banco de dados com paginação
-    const productCategories = await productCategoryRepository.find({
-      take: limit,
-      skip: offset,
-      order: { id: "DESC" },
-    });
+    // Usar o serviço de paginação
+    const result = await PaginationService.paginate(
+      productCategoryRepository,
+      page,
+      limit,
+      { id: "DESC" },
+    );
 
     // Retorna a resposta com os dados e informações da paginação
-    res.status(200).json({
-      currentPage: page,
-      lastPage,
-      totalProductCategories,
-      productCategories,
-    });
+    res.status(200).json({ result });
     return;
   } catch (error) {
     // Retornar erro em caso de falha
