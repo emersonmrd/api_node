@@ -16,11 +16,51 @@ router.get("/product-categories", async (req: Request, res: Response) => {
     const productCategoryRepository =
       AppDataSource.getRepository(ProductCategory);
 
-    // Recupera todas as situações do banco
-    const productCategories = await productCategoryRepository.find();
+    // Receber o número da página e definir página 1 como padrão
+    const page = Number(req.query.page) || 1;
 
-    // Retorna as situações como resposta
-    res.status(200).json(productCategories);
+    // Definir o limite de registros por página
+    const limit = 40;
+
+    // Contar o total de registros no banco de dados
+    const totalProductCategories = await productCategoryRepository.count();
+
+    // Verificar se existem registros
+    if (totalProductCategories === 0) {
+      res.status(400).json({
+        message: "Nenhuma categoria de produto encontrada!",
+      });
+      return;
+    }
+
+    // Calcular a última página
+    const lastPage = Math.ceil(totalProductCategories / limit);
+
+    // Verificar se a página solicitada é valida
+    if (page > lastPage) {
+      res.status(400).json({
+        message: `Página inválida. O total de página é ${lastPage}`,
+      });
+      return;
+    }
+
+    // Calcular o offset (a patir de qual registro começar a busca)
+    const offset = (page - 1) * limit;
+
+    // Recupera as situações do banco de dados com paginação
+    const productCategories = await productCategoryRepository.find({
+      take: limit,
+      skip: offset,
+      order: { id: "DESC" },
+    });
+
+    // Retorna a resposta com os dados e informações da paginação
+    res.status(200).json({
+      currentPage: page,
+      lastPage,
+      totalProductCategories,
+      productCategories,
+    });
     return;
   } catch (error) {
     // Retornar erro em caso de falha
