@@ -147,6 +147,13 @@ Validar formulário.
 npm i yup
 ```
 
+Permitir requisição externa
+
+```
+npm i cors
+npm install --save-dev @types/cors
+```
+
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```

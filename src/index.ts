@@ -2,6 +2,8 @@
 import "dotenv/config";
 // Importar a biblioteca Express
 import express from "express";
+// Importar a biblioteca para permitir conexão externa
+import cors from "cors";
 
 // Incluir as CONTROLLERS
 import AuthController from "./controllers/AuthController.js";
@@ -14,6 +16,9 @@ const app = express();
 
 // Criar o middleware para receber os dados no corpo da requisição
 app.use(express.json());
+
+// Criar o middleware para permitir reuisição externa
+app.use(cors());
 
 // Criar as rotas
 app.use("/", AuthController);
