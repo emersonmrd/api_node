@@ -8,6 +8,8 @@ import { ProductCategory } from "../entity/ProductCategory.js";
 import { PaginationService } from "../services/PaginationService.js";
 // Importar a biblioteca para validar os dados para cadastrar e editar.
 import * as yup from "yup";
+// Importar o NOT do typeorm
+import { Not } from "typeorm";
 
 // Criar a aplicação Express
 const router = express.Router();
@@ -114,6 +116,20 @@ router.post("/product-categories", async (req: Request, res: Response) => {
     const productCategoryRepository =
       AppDataSource.getRepository(ProductCategory);
 
+    // Recuperar o registro do banco de dados com o valor da coluna name
+    const existingProductCategory = await productCategoryRepository.findOne({
+      where: { name: data.name },
+    });
+
+    //Verfiicar se já eixste uma categoria de produto com o mesmo nome
+    if (existingProductCategory) {
+      // Retornar resposta
+      res.status(201).json({
+        message: "Já existe uma categoria de produto cadastrada com esse nome!",
+      });
+      return;
+    }
+
     // Criar um novo registro de Categoria (dados simulados)
     const newProductCategory = productCategoryRepository.create(data);
 
@@ -183,6 +199,22 @@ router.put(
       if (!productCategory) {
         res.status(404).json({
           message: "Categoria não encontrada!",
+        });
+        return;
+      }
+
+      // Verificar se já existe outra categoria de produto com o mesmo nome, mas que não seja o registro atual
+      const existingSituation = await productCategoryRepository.findOne({
+        where: {
+          name: data.name,
+          id: Not(parseInt(id)), // Exclui o próprio registro da busca
+        },
+      });
+
+      if (existingSituation) {
+        res.status(400).json({
+          message:
+            "Já existe uma categoria de produto cadastrada com esse nome!",
         });
         return;
       }

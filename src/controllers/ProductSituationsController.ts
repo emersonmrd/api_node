@@ -8,6 +8,8 @@ import { ProductSituation } from "../entity/ProductSituation.js";
 import { PaginationService } from "../services/PaginationService.js";
 // Importar a biblioteca para validar os dados para cadastrar e editar.
 import * as yup from "yup";
+// Importar o NOT do typeorm
+import { Not } from "typeorm";
 
 // Criar a aplicação Express
 const router = express.Router();
@@ -115,6 +117,20 @@ router.post("/product-situations", async (req: Request, res: Response) => {
     const productSituationRepository =
       AppDataSource.getRepository(ProductSituation);
 
+    // Recuperar o registro do banco de dados com o valor da coluna name
+    const existingProdutcSituation = await productSituationRepository.findOne({
+      where: { name: data.name },
+    });
+
+    //Verfiicar se já eixste uma situação de produto com o mesmo nome
+    if (existingProdutcSituation) {
+      // Retornar resposta
+      res.status(201).json({
+        message: "Já existe uma situação de produto cadastrada com esse nome!",
+      });
+      return;
+    }
+
     // Criar um novo registro de situação (dados simulados)
     const newProductSituation = productSituationRepository.create(data);
 
@@ -184,6 +200,24 @@ router.put(
       //Verificar se a situação foi encontrada
       if (!productSituation) {
         res.status(404).json({ message: "Situação não encontrada!" });
+        return;
+      }
+
+      // Verificar se já existe outra situação de produto com o mesmo nome, mas que não seja o registro atual
+      const existingProdutcSituation = await productSituationRepository.findOne(
+        {
+          where: {
+            name: data.name,
+            id: Not(parseInt(id)), // Exclui o próprio registro da busca
+          },
+        },
+      );
+
+      if (existingProdutcSituation) {
+        res.status(400).json({
+          message:
+            "Já existe uma situação de produto cadastrada com esse nome!",
+        });
         return;
       }
 

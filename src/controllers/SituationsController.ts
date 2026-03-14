@@ -8,6 +8,8 @@ import { Situation } from "../entity/Situation.js";
 import { PaginationService } from "../services/PaginationService.js";
 // Importar a biblioteca para validar os dados para cadastrar e editar.
 import * as yup from "yup";
+// Importar o NOT do typeorm
+import { Not } from "typeorm";
 
 // Criar a aplicação Express
 const router = express.Router();
@@ -111,6 +113,20 @@ router.post("/situations", async (req: Request, res: Response) => {
     // Criar uma instância do repositório de Situation
     const situationRepository = AppDataSource.getRepository(Situation);
 
+    // Recuperar o registro do banco de dados com o valor da coluna nameSituation
+    const existingSituation = await situationRepository.findOne({
+      where: { nameSituation: data.nameSituation },
+    });
+
+    //Verfiicar se já eixste uma situação com o mesmo nome
+    if (existingSituation) {
+      // Retornar resposta
+      res.status(201).json({
+        message: "Já existe uma situação cadastrada com esse nome!",
+      });
+      return;
+    }
+
     // Criar um novo regitro de stiauação (dados simulados)
     const newSituation = situationRepository.create(data);
 
@@ -179,6 +195,21 @@ router.put(
       // Verificar se a situação foi encontrada
       if (!situation) {
         res.status(404).json({ message: "Situação não encontrada!" });
+        return;
+      }
+
+      // Verificar se já existe outra situação com o mesmo nome, mas que não seja o registro atual
+      const existingSituation = await situationRepository.findOne({
+        where: {
+          nameSituation: data.nameSituation,
+          id: Not(parseInt(id)), // Exclui o próprio registro da busca
+        },
+      });
+
+      if (existingSituation) {
+        res.status(400).json({
+          message: "Já existe uma situação cadastrada com esse nome!",
+        });
         return;
       }
 
