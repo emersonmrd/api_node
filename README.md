@@ -135,6 +135,12 @@ Executar as migrations para criar as tabelas no banco de dados.
 npx typeorm migration:run -d dist/data-source.js
 ```
 
+Executar as seeds para cadastrar registros de testes nas tabelas no banco de dados
+
+```
+node dist/run-seeds.js
+```
+
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```
