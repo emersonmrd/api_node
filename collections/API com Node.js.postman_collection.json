@@ -1,0 +1,439 @@
+{
+  "info": {
+    "_postman_id": "4200d770-9f09-4db8-a50c-d8b0dbc81a68",
+    "name": "API com Node.js",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52377212",
+    "_collection_link": "https://go.postman.co/collection/52377212-4200d770-9f09-4db8-a50c-d8b0dbc81a68?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}",
+              "host": [
+                "{{host}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Situation",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/situations?page=1&limit=2",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "situations"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/situations/120",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "situations",
+                "120"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nameSituation\": \"Ativo\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/situations",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "situations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nameSituation\": \"Ativo\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{host}}/situations/120",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "situations",
+                "120"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/situations/15",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "situations",
+                "15"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Category",
+          "item": [
+            {
+              "name": "ListProductCategory",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/product-categories?page=1&limit=10",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-categories"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "ViewProductCategory",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/product-categories/5",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-categories",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "CreateProductCategory",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Te\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{host}}/product-categories",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "EditProductCategory",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Galpão\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{host}}/product-categories/5",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-categories",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "DeleteProductCategory",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{host}}/product-categories/60",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-categories",
+                    "60"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Situation",
+          "item": [
+            {
+              "name": "ListProductSituation",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/product-situations?page=1&limit=10",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-situations"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "ViewProductSituation",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/product-situations/1",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-situations",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "CreateProductSituation",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Teste\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{host}}/product-situations",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-situations"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "EditProductSituation",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Desativado\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{host}}/product-situations/1",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-situations",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "DeleteProductSituation",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{host}}/product-situations/5",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "product-situations",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Test",
+      "item": [
+        {
+          "name": "TestConnection",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/test-connection",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "test-connection"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

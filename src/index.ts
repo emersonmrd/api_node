@@ -10,6 +10,7 @@ import AuthController from "./controllers/AuthController.js";
 import ProductCategoriesController from "./controllers/ProductCategoriesController.js";
 import ProductSituationsController from "./controllers/ProductSituationsController.js";
 import SituationsController from "./controllers/SituationsController.js";
+import TestConnectionController from "./controllers/TestConnectionController.js";
 
 // Criar a aplicação Express
 const app = express();
@@ -22,6 +23,7 @@ app.use(cors());
 
 // Criar as rotas
 app.use("/", AuthController);
+app.use("/", TestConnectionController);
 app.use("/", SituationsController);
 app.use("/", ProductCategoriesController);
 app.use("/", ProductSituationsController);
