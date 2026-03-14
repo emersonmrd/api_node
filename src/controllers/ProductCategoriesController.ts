@@ -4,7 +4,10 @@ import express, { Request, Response } from "express";
 import { AppDataSource } from "../data-source.js";
 // Improtar a entidade situation
 import { ProductCategory } from "../entity/ProductCategory.js";
+// Importar o serviço de paginação
 import { PaginationService } from "../services/PaginationService.js";
+// Importar a biblioteca para validar os dados para cadastrar e editar.
+import * as yup from "yup";
 
 // Criar a aplicação Express
 const router = express.Router();
@@ -95,6 +98,18 @@ router.post("/product-categories", async (req: Request, res: Response) => {
   try {
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
+
+    // Validar os dados utilizando o yup
+    const schema = yup.object().shape({
+      name: yup
+        .string()
+        .required("O campo nome é obrigatório!")
+        .min(3, "O campo nome deve ter no mínimo 3 caracteres!"),
+    });
+
+    // Verificar se os dados passaram pela validação
+    await schema.validate(data, { abortEarly: false });
+
     // Criar uma instância do repositório de ProductCategory
     const productCategoryRepository =
       AppDataSource.getRepository(ProductCategory);
@@ -111,6 +126,13 @@ router.post("/product-categories", async (req: Request, res: Response) => {
       name: newProductCategory,
     });
   } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      // Retornar erros de validação
+      res.status(400).json({
+        message: error.errors,
+      });
+      return;
+    }
     // Retornar erro em caso de falha
     //console.log(error);
     res.status(500).json({
@@ -137,6 +159,17 @@ router.put(
 
       // Receber os dados enviados no corpo da requisição
       const data = req.body;
+
+      // Validar os dados utilizando o yup
+      const schema = yup.object().shape({
+        name: yup
+          .string()
+          .required("O campo nome é obrigatório!")
+          .min(3, "O campo nome deve ter no mínimo 3 caracteres!"),
+      });
+
+      // Verificar se os dados passaram pela validação
+      await schema.validate(data, { abortEarly: false });
 
       // Criar uma instância do repositório de ProductCategory
       const productCategoryRepository =
@@ -167,7 +200,16 @@ router.put(
         category: updatedProductCategory,
       });
     } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        // Retornar erros de validação
+        res.status(400).json({
+          message: error.errors,
+        });
+        return;
+      }
       res.status(500).json({
+        // Retornar erro em caso de falha
+        //console.log(error);
         message: "Erro ao atualizar categoria!",
       });
     }

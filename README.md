@@ -141,6 +141,12 @@ Executar as seeds para cadastrar registros de testes nas tabelas no banco de dad
 node dist/run-seeds.js
 ```
 
+Validar formulário.
+
+```
+npm i yup
+```
+
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```
@@ -192,7 +198,8 @@ git remote add origin <REMOTE_URL>
 
 Enviar os commits locais para um repositório remoto.
 
-```
+````
 git push <remote> <branch>
 git push origin <branch>
-```
+``` push origin <branch>
+````

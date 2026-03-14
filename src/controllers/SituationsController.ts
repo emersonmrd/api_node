@@ -6,6 +6,8 @@ import { AppDataSource } from "../data-source.js";
 import { Situation } from "../entity/Situation.js";
 // Importar o serviço de paginação
 import { PaginationService } from "../services/PaginationService.js";
+// Importar a biblioteca para validar os dados para cadastrar e editar.
+import * as yup from "yup";
 
 // Criar a aplicação Express
 const router = express.Router();
@@ -95,6 +97,17 @@ router.post("/situations", async (req: Request, res: Response) => {
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
 
+    // Validar os dados utilizando o yup
+    const schema = yup.object().shape({
+      nameSituation: yup
+        .string()
+        .required("O campo nome é obrigatório!")
+        .min(3, "O campo nome deve ter no mínimo 3 caracteres!"),
+    });
+
+    // Verificar se os dados passaram pela validação
+    await schema.validate(data, { abortEarly: false });
+
     // Criar uma instância do repositório de Situation
     const situationRepository = AppDataSource.getRepository(Situation);
 
@@ -110,6 +123,13 @@ router.post("/situations", async (req: Request, res: Response) => {
       situation: newSituation,
     });
   } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      // Retornar erros de validação
+      res.status(400).json({
+        message: error.errors,
+      });
+      return;
+    }
     // Retornar erro em caso de falha
     //console.log(error);
     res.status(500).json({
@@ -132,15 +152,23 @@ router.put(
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição
-
       const { id } = req.params;
 
       // Receber os dados enviados no corpo da requisição
-
       const data = req.body;
 
-      // Obter o repositório da entidade Situation
+      // Validar os dados utilizando o yup
+      const schema = yup.object().shape({
+        nameSituation: yup
+          .string()
+          .required("O campo nome é obrigatório!")
+          .min(3, "O campo nome deve ter no mínimo 3 caracteres!"),
+      });
 
+      // Verificar se os dados passaram pela validação
+      await schema.validate(data, { abortEarly: false });
+
+      // Obter o repositório da entidade Situation
       const situationRepository = AppDataSource.getRepository(Situation);
 
       // Buscar a situação no banco de dados pelo ID
@@ -166,6 +194,13 @@ router.put(
         situation: updateSituation,
       });
     } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        // Retornar erros de validação
+        res.status(400).json({
+          message: error.errors,
+        });
+        return;
+      }
       // Retornar erro em caso de falha
       //console.log(error);
       res.status(500).json({ message: "Erro ao editar a situação id" });
