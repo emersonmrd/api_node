@@ -124,7 +124,7 @@ router.post("/product-categories", async (req: Request, res: Response) => {
     //Verfiicar se já eixste uma categoria de produto com o mesmo nome
     if (existingProductCategory) {
       // Retornar resposta
-      res.status(201).json({
+      res.status(400).json({
         message: "Já existe uma categoria de produto cadastrada com esse nome!",
       });
       return;

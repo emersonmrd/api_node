@@ -125,7 +125,7 @@ router.post("/product-situations", async (req: Request, res: Response) => {
     //Verfiicar se já eixste uma situação de produto com o mesmo nome
     if (existingProdutcSituation) {
       // Retornar resposta
-      res.status(201).json({
+      res.status(400).json({
         message: "Já existe uma situação de produto cadastrada com esse nome!",
       });
       return;

@@ -121,7 +121,7 @@ router.post("/situations", async (req: Request, res: Response) => {
     //Verfiicar se já eixste uma situação com o mesmo nome
     if (existingSituation) {
       // Retornar resposta
-      res.status(201).json({
+      res.status(400).json({
         message: "Já existe uma situação cadastrada com esse nome!",
       });
       return;
