@@ -19,9 +19,9 @@ export default class CreateSituationsSeed {
 
     // Criar as situações que devem ser cadastradas no banco de dados
     const situations = [
-      { nameSituation: "Ativo" },
-      { nameSituation: "Inativo" },
-      { nameSituation: "Pendente" },
+      { id: 1, nameSituation: "Ativo" },
+      { id: 2, nameSituation: "Inativo" },
+      { id: 3, nameSituation: "Pendente" },
     ];
 
     // Salvar os registros no banco de dados.

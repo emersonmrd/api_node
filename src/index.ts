@@ -6,11 +6,12 @@ import express from "express";
 import cors from "cors";
 
 // Incluir as CONTROLLERS
-import AuthController from "./controllers/AuthController.js";
-import ProductCategoriesController from "./controllers/ProductCategoriesController.js";
-import ProductSituationsController from "./controllers/ProductSituationsController.js";
-import SituationsController from "./controllers/SituationsController.js";
 import TestConnectionController from "./controllers/TestConnectionController.js";
+import AuthController from "./controllers/AuthController.js";
+import UsersController from "./controllers/UsersController.js";
+import SituationsController from "./controllers/SituationsController.js";
+import ProductSituationsController from "./controllers/ProductSituationsController.js";
+import ProductCategoriesController from "./controllers/ProductCategoriesController.js";
 
 // Criar a aplicação Express
 const app = express();
@@ -22,11 +23,12 @@ app.use(express.json());
 app.use(cors());
 
 // Criar as rotas
-app.use("/", AuthController);
 app.use("/", TestConnectionController);
+app.use("/", AuthController);
+app.use("/", UsersController);
 app.use("/", SituationsController);
-app.use("/", ProductCategoriesController);
 app.use("/", ProductSituationsController);
+app.use("/", ProductCategoriesController);
 
 // Iniciar o servidor na porta definida na variável de ambiente
 const app_porta = process.env.APP_PORT;

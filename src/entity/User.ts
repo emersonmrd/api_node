@@ -19,8 +19,9 @@ export class User {
   @Column({ type: "varchar", unique: true })
   email!: string;
 
+  // Relacionamento ManyToOne com a tabela situations
   @ManyToOne(() => Situation, (situation) => situation.users)
-  @JoinColumn({ name: "situationId" })
+  @JoinColumn({ name: "situationId" }) // Nome da chave estrangeira
   situation!: any; // evita metadata circular
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

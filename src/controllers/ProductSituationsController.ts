@@ -131,7 +131,7 @@ router.post("/product-situations", async (req: Request, res: Response) => {
       return;
     }
 
-    // Criar um novo registro de situação (dados simulados)
+    // Criar um novo registro de situação produto (dados simulados)
     const newProductSituation = productSituationRepository.create(data);
 
     // Salvar o registro no banco
