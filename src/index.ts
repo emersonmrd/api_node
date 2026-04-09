@@ -10,6 +10,7 @@ import TestConnectionController from "./controllers/TestConnectionController.js"
 import AuthController from "./controllers/AuthController.js";
 import UsersController from "./controllers/UsersController.js";
 import SituationsController from "./controllers/SituationsController.js";
+import ProductController from "./controllers/ProductController.js";
 import ProductSituationsController from "./controllers/ProductSituationsController.js";
 import ProductCategoriesController from "./controllers/ProductCategoriesController.js";
 
@@ -27,6 +28,7 @@ app.use("/", TestConnectionController);
 app.use("/", AuthController);
 app.use("/", UsersController);
 app.use("/", SituationsController);
+app.use("/", ProductController);
 app.use("/", ProductSituationsController);
 app.use("/", ProductCategoriesController);
 
