@@ -8,6 +8,8 @@ import { Product } from "../entity/Product.js";
 import { PaginationService } from "../services/PaginationService.js";
 // Importar a biblioteca para validar os dados para cadastrar e editar.
 import * as yup from "yup";
+// Importar a biblioteca para converter o slug automaticamente antes de salvar no banco de dados.
+import slugify from "slugify";
 // Importar o NOT do typeorm
 import { Not } from "typeorm";
 // Criar a aplicação Express
@@ -88,6 +90,7 @@ router.get(
 /*
 {
     "name": "Curso de Node.js",
+    "slug": "curso-de-nodejs",
     "description": "No Curso de Node.js é abordado o desenvolvimento ...",
     "price": 497.15,
     "situation": 1,
@@ -106,6 +109,12 @@ router.post("/products", async (req: Request, res: Response) => {
         .required("O campo nome é obrigatório!")
         .min(3, "O campo nome deve ter no mínimo 3 caracteres!")
         .max(255, "O campo nome deve ter no máximo 255 caracteres!"), // Limite opcional
+
+      slug: yup
+        .string()
+        .required("O campo slug é obrigatório!")
+        .min(3, "O campo slug deve ter no mínimo 3 caracteres!")
+        .max(255, "O campo slug deve ter no máximo 255 caracteres!"),
 
       description: yup
         .string()
@@ -141,8 +150,24 @@ router.post("/products", async (req: Request, res: Response) => {
     // Verificar se os dados passaram pela validação
     await schema.validate(data, { abortEarly: false });
 
+    // Gerar slug automaticamente com base no nome
+    data.slug = slugify(data.slug, { lower: true, strict: true });
+
     // Criar uma instância do repositório de Product
     const productRepository = AppDataSource.getRepository(Product);
+
+    // Recuperar o registro do banco de dados com o valor da coluna email
+    const existingProduct = await productRepository.findOne({
+      where: { slug: data.slug },
+    });
+
+    // Verificar se já existe um produto com o mesmo slug
+    if (existingProduct) {
+      res.status(400).json({
+        message: "Já existe um produto cadastrado com esse slug!",
+      });
+      return;
+    }
 
     // Criar um novo registro
     const newProduct = productRepository.create(data);
@@ -202,6 +227,12 @@ router.put(
           .min(3, "O campo nome deve ter no mínimo 3 caracteres!")
           .max(255, "O campo nome deve ter no máximo 255 caracteres!"), // Limite opcional
 
+        slug: yup
+          .string()
+          .required("O campo slug é obrigatório!")
+          .min(3, "O campo slug deve ter no mínimo 3 caracteres!")
+          .max(255, "O campo slug deve ter no máximo 255 caracteres!"),
+
         description: yup
           .string()
           .required("O campo descrição é obrigatório!")
@@ -246,6 +277,24 @@ router.put(
       if (!product) {
         res.status(404).json({
           message: "Produto não encontrado!",
+        });
+        return;
+      }
+
+      // Gerar slug automaticamente com base no nome
+      data.slug = slugify(data.slug, { lower: true, strict: true });
+
+      // Recuperar o registro do banco de dados com o valor da coluna email
+      const existingProduct = await productRepository.findOne({
+        where: {
+          slug: data.slug,
+          id: Not(parseInt(id)), // Exclui o próprio registro da busca
+        },
+      });
+      // Verificar se já existe um produto com o mesmo slug
+      if (existingProduct) {
+        res.status(400).json({
+          message: "Já existe um produto cadastrado com esse slug!",
         });
         return;
       }

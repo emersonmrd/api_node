@@ -154,6 +154,24 @@ npm i cors
 npm install --save-dev @types/cors
 ```
 
+Converter o slug automaticamente antes de salvar no banco de dados.
+
+```
+npm install slugify
+```
+
+Instalar o módulo para crptografar a senha
+
+```
+npm install --save bcryptjs
+```
+
+Instalar os tipos do bcryptjs.
+
+```
+npm install --save-dev  @types/bcryptjs
+```
+
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```

@@ -93,6 +93,7 @@ router.get(
 {
   "name": "Emerson",
   "email" "emerson@emerson.com.br",
+  "password": "123456A#",
   "situation": 1
 }
 */
@@ -111,6 +112,17 @@ router.post("/users", async (req: Request, res: Response) => {
         .string()
         .email("E-mail inválido!")
         .required("O campo e-mail é obrigatório!"),
+      password: yup
+        .string()
+        .required("O campo senha é obrigatório!")
+        .min(6, "O campo senha deve ter no mínimo 6 caracteres!")
+        .max(128, "A senha deve ter no máximo 128 caracteres!")
+        .matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula!")
+        .matches(/[0-9]/, "A senha deve conter pelo menos um número!")
+        .matches(
+          /[^A-Za-z0-9]/,
+          "A senha deve conter pelo menos um caractere especial!",
+        ),
       situation: yup.number().required("O campo situação é obrigatório!"),
     });
 

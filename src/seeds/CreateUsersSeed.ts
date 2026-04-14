@@ -38,24 +38,28 @@ export default class CreateUsersSeed {
         id: 1,
         name: "Cesar",
         email: "cesar@celke.com.br",
+        password: "123456A#",
         situation: situation,
       },
       {
         id: 2,
         name: "Kelly",
         email: "kelly@celke.com.br",
+        password: "123456A#",
         situation: situation,
       },
       {
         id: 3,
         name: "Jessica",
         email: "jessica@celke.com.br",
+        password: "123456A#",
         situation: situation,
       },
       {
         id: 4,
         name: "Gabrielly",
         email: "gabrielly@celke.com.br",
+        password: "123456A#",
         situation: situation,
       },
     ];

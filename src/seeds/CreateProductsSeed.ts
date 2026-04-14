@@ -56,6 +56,7 @@ export default class CreateProductsSeed {
       Object.assign(new Product(), {
         id: 1,
         name: "Curso de Node.js",
+        slug: "curso-de-nodejs",
         description: "No Curso de Node.js é abordado o desenvolvimento ...",
         price: 447.87,
         situation: situation,
@@ -64,6 +65,7 @@ export default class CreateProductsSeed {
       Object.assign(new Product(), {
         id: 2,
         name: "Curso de React",
+        slug: "curso-de-react",
         price: 467.57,
         description: "No Curso de React é abordado o desenvolvimento ...",
         situation: situation,
@@ -72,6 +74,7 @@ export default class CreateProductsSeed {
       Object.assign(new Product(), {
         id: 3,
         name: "Curso de Node.js e React",
+        slug: "curso-de-nodejs-e-react",
         price: 497.67,
         description:
           "No Curso de Node.js e React é abordado o desenvolvimento ...",
