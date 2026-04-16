@@ -172,6 +172,18 @@ Instalar os tipos do bcryptjs.
 npm install --save-dev  @types/bcryptjs
 ```
 
+Instalar a dependencia JWT para manipular token de autenticação
+
+```
+npm install jsonwebtoken
+```
+
+Instalar os tipos do jsonwebtoken.
+
+```
+npm i --save-dev @types/jsonwebtoken
+```
+
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```
@@ -223,8 +235,11 @@ git remote add origin <REMOTE_URL>
 
 Enviar os commits locais para um repositório remoto.
 
-````
+``````
 git push <remote> <branch>
 git push origin <branch>
 ``` push origin <branch>
-````
+````push origin <branch>
+``` push origin <branch>
+`````ush origin <branch>
+``````

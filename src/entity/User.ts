@@ -6,7 +6,11 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
+// Importando a entidade Situation
 import { Situation } from "./Situation.js";
+
+// Importar a biblioteca para criptografar a senha
+import bcrypt from "bcryptjs";
 
 @Entity("users")
 export class User {
@@ -36,4 +40,10 @@ export class User {
     onUpdate: "CURRENT_TIMESTAMP",
   })
   updatedAt!: Date;
+
+  // Método para comparar a senha informada pelo usuário com a senha armazenada no banco de dados.
+  async comparePassword(password: string): Promise<boolean> {
+    // Compara senha enviada pela requisição com a senha criptografada no banco de dados
+    return bcrypt.compare(password, this.password);
+  }
 }
