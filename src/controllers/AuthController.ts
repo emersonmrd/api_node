@@ -10,6 +10,10 @@ import * as yup from "yup";
 import crypto from "crypto";
 // Importar o serviço de autenticação, responsável por validar o login do usuário
 import { AuthService } from "../services/AuthService.js";
+// Importar a biblioteca para enviar e-mail
+import nodemailer from "nodemailer";
+// Importar a biblioteca variáveis de ambiente
+import "dotenv/config";
 
 // Criar a aplicação Express
 const router = express.Router();
@@ -65,7 +69,7 @@ router.post("/", async (req: Request, res: Response) => {
 // Dados em formato de objeto
 /*
 {
-  "urlRecoverPassword": "http://localhost",
+  "urlRecoverPassword": "http://localhost:8080",
   "email": "cesar@celke.com.br"
 }
 */
@@ -109,13 +113,46 @@ router.post(
       // Salvar as alterações no banco de dados
       await userRepository.save(user);
 
-      // Retornar a resposta de sucesso
-      res.status(200).json({
-        message: "Gerado o link para recuperar a senha!",
-        urlRecoverPassword: `${data.urlRecoverPassword}?email=${data.email}&key=${user.recoverPassword}`,
-        key: user.recoverPassword,
+      // Criar a variável com as credencias do servidor para enviar e-mail
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT),
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
       });
-      return;
+
+      // Variável para montar o link de recuperação de senha.
+      var recover_passwd_link = `${data.urlRecoverPassword}?email=${data.email}&key=${user.recoverPassword}`;
+
+      // Criar a variável com o conteúdo do e-mail
+      var message_content = {
+        from: process.env.EMAIL_FROM,
+        to: data.email,
+        subject: "Recuperar senha",
+        text: `Prezado(a) ${user.name}\n\nInformamos que a sua solicitação de alteração de senha foi recebida com sucesso.\n\nClique ou copie o link para criar uma nova senha em nosso sistema: ${recover_passwd_link}\n\nEsta mensagem foi enviada a você pela empresa ${process.env.APP}.\n\nVocê está recebendo este e-mail porque está cadastrado no banco de dados da empresa ${process.env.APP}. Nenhum e-mail enviado pela empresa ${process.env.APP} tem arquivos anexados ou solicita o preenchimento de senhas e informações cadastrais.\n\n`, // Conteúdo do e-mail somente texto
+        html: `Prezado(a) ${user.name}<br><br>Informamos que a sua solicitação de alteração de senha foi recebida com sucesso.<br><br>Clique no link para criar uma nova senha em nosso sistema: <a href=${recover_passwd_link}>${recover_passwd_link}</a><br><br>Esta mensagem foi enviada a você pela empresa ${process.env.APP}.<br><br>Você está recebendo este e-mail porque está cadastrado no banco de dados da empresa ${process.env.APP}. Nenhum e-mail enviado pela empresa ${process.env.APP} tem arquivos anexados ou solicita o preenchimento de senhas e informações cadastrais.<br><br>`, // Conteúdo do e-mail com HTML
+      };
+
+      // Enviar e-mail
+      transporter.sendMail(message_content, function (err) {
+        if (err) {
+          console.log(`Erro ao enviar e-mail:\n\n${err}`);
+          // Retornar a resposta de erro
+          res.status(200).json({
+            message: `E-mail não enviado, tente novamente ou contate ${process.env.EMAIL_ADM}`,
+          });
+          return;
+        } else {
+          // Retornar a resposta de sucesso
+          res.status(200).json({
+            message: "E-mail enviado! Verifique sua caixa de entrada.",
+            urlRecoverPassword: recover_passwd_link,
+          });
+          return;
+        }
+      });
     } catch (error) {
       if (error instanceof yup.ValidationError) {
         // Retornar erros de validação

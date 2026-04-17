@@ -7,6 +7,8 @@
 
 Duplicar o arquivo ".env.example" e renomear para ".env".<br>
 Alterar no arquivo .env as credenciais do banco de dados<br>
+Alterar no arquivo .env a chave JWT_SECRET para que o projeto tenha uma chave única.<br>
+Alterar no arquivo .env as credenciais do servidor responsável em enviar o e-mail.<br>
 
 Instalar todas as dependencias indicadas pelo package.json.
 
@@ -182,6 +184,18 @@ Instalar os tipos do jsonwebtoken.
 
 ```
 npm i --save-dev @types/jsonwebtoken
+```
+
+Instalar o módulo para enviar e-mail.
+
+```
+npm install nodemailer
+```
+
+Instalar os tipos do nodemailer.
+
+```
+npm install --save-dev @types/nodemailer
 ```
 
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
