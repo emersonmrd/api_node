@@ -1,4 +1,6 @@
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   JoinColumn,
@@ -43,6 +45,15 @@ export class User {
     onUpdate: "CURRENT_TIMESTAMP",
   })
   updatedAt!: Date;
+
+  @BeforeInsert() // Executa o método antes de inserir um novo usuário
+  @BeforeUpdate() // Executa o método antes de atualizar um usuário existente
+  async hashPassword(): Promise<void> {
+    // Verificar se a senha está definida e a criptografa antes de salvar no banco.
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+  }
 
   // Método para comparar a senha informada pelo usuário com a senha armazenada no banco de dados.
   async comparePassword(password: string): Promise<boolean> {

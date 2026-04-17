@@ -74,101 +74,98 @@ router.post("/", async (req: Request, res: Response) => {
 }
 */
 
-router.post(
-  "/recover-password",
-  async (req: Request<{ id: string }>, res: Response) => {
-    try {
-      // Receber os dados enviados no corpo da requisição
-      var data = req.body;
+router.post("/recover-password", async (req: Request, res: Response) => {
+  try {
+    // Receber os dados enviados no corpo da requisição
+    var data = req.body;
 
-      // Validar os dados utilizando o yup
-      const schema = yup.object().shape({
-        urlRecoverPassword: yup.string().required("A URL é óbrigatória!"),
-        email: yup
-          .string()
-          .email("E-mail inválido!")
-          .required("O campo e-mail é obrigatório!"),
-      });
+    // Validar os dados utilizando o yup
+    const schema = yup.object().shape({
+      urlRecoverPassword: yup.string().required("A URL é óbrigatória!"),
+      email: yup
+        .string()
+        .email("E-mail inválido!")
+        .required("O campo e-mail é obrigatório!"),
+    });
 
-      // Verificar se os dados passaram pela validação
-      await schema.validate(data, { abortEarly: false });
+    // Verificar se os dados passaram pela validação
+    await schema.validate(data, { abortEarly: false });
 
-      // Criar uma instância do repositório de User
-      const userRepository = AppDataSource.getRepository(User);
+    // Criar uma instância do repositório de User
+    const userRepository = AppDataSource.getRepository(User);
 
-      // Buscar o usuário no banco de dados pelo email
-      const user = await userRepository.findOneBy({
-        email: data.email,
-      });
+    // Buscar o usuário no banco de dados pelo email
+    const user = await userRepository.findOneBy({
+      email: data.email,
+    });
 
-      // Verificar se o usuário foi encontrado
-      if (!user) {
-        res.status(404).json({ message: "Usuário não encontrado!" });
+    // Verificar se o usuário foi encontrado
+    if (!user) {
+      res.status(404).json({ message: "Usuário não encontrado!" });
+      return;
+    }
+
+    // Gera um token seguro de 64 caracteres
+    user.recoverPassword = crypto.randomBytes(32).toString("hex");
+
+    // Salvar as alterações no banco de dados
+    await userRepository.save(user);
+
+    // Criar a variável com as credencias do servidor para enviar e-mail
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Variável para montar o link de recuperação de senha.
+    var recover_passwd_link = `${data.urlRecoverPassword}?email=${data.email}&key=${user.recoverPassword}`;
+
+    // Criar a variável com o conteúdo do e-mail
+    var message_content = {
+      from: process.env.EMAIL_FROM,
+      to: data.email,
+      subject: "Recuperar senha",
+      text: `Prezado(a) ${user.name}\n\nInformamos que a sua solicitação de alteração de senha foi recebida com sucesso.\n\nClique ou copie o link para criar uma nova senha em nosso sistema: ${recover_passwd_link}\n\nEsta mensagem foi enviada a você pela empresa ${process.env.APP}.\n\nVocê está recebendo este e-mail porque está cadastrado no banco de dados da empresa ${process.env.APP}. Nenhum e-mail enviado pela empresa ${process.env.APP} tem arquivos anexados ou solicita o preenchimento de senhas e informações cadastrais.\n\n`, // Conteúdo do e-mail somente texto
+      html: `Prezado(a) ${user.name}<br><br>Informamos que a sua solicitação de alteração de senha foi recebida com sucesso.<br><br>Clique no link para criar uma nova senha em nosso sistema: <a href=${recover_passwd_link}>${recover_passwd_link}</a><br><br>Esta mensagem foi enviada a você pela empresa ${process.env.APP}.<br><br>Você está recebendo este e-mail porque está cadastrado no banco de dados da empresa ${process.env.APP}. Nenhum e-mail enviado pela empresa ${process.env.APP} tem arquivos anexados ou solicita o preenchimento de senhas e informações cadastrais.<br><br>`, // Conteúdo do e-mail com HTML
+    };
+
+    // Enviar e-mail
+    transporter.sendMail(message_content, function (err) {
+      if (err) {
+        console.log(`Erro ao enviar e-mail:\n\n${err}`);
+        // Retornar a resposta de erro
+        res.status(200).json({
+          message: `E-mail não enviado, tente novamente ou contate ${process.env.EMAIL_ADM}`,
+        });
         return;
-      }
-
-      // Gera um token seguro de 64 caracteres
-      user.recoverPassword = crypto.randomBytes(32).toString("hex");
-
-      // Salvar as alterações no banco de dados
-      await userRepository.save(user);
-
-      // Criar a variável com as credencias do servidor para enviar e-mail
-      const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      // Variável para montar o link de recuperação de senha.
-      var recover_passwd_link = `${data.urlRecoverPassword}?email=${data.email}&key=${user.recoverPassword}`;
-
-      // Criar a variável com o conteúdo do e-mail
-      var message_content = {
-        from: process.env.EMAIL_FROM,
-        to: data.email,
-        subject: "Recuperar senha",
-        text: `Prezado(a) ${user.name}\n\nInformamos que a sua solicitação de alteração de senha foi recebida com sucesso.\n\nClique ou copie o link para criar uma nova senha em nosso sistema: ${recover_passwd_link}\n\nEsta mensagem foi enviada a você pela empresa ${process.env.APP}.\n\nVocê está recebendo este e-mail porque está cadastrado no banco de dados da empresa ${process.env.APP}. Nenhum e-mail enviado pela empresa ${process.env.APP} tem arquivos anexados ou solicita o preenchimento de senhas e informações cadastrais.\n\n`, // Conteúdo do e-mail somente texto
-        html: `Prezado(a) ${user.name}<br><br>Informamos que a sua solicitação de alteração de senha foi recebida com sucesso.<br><br>Clique no link para criar uma nova senha em nosso sistema: <a href=${recover_passwd_link}>${recover_passwd_link}</a><br><br>Esta mensagem foi enviada a você pela empresa ${process.env.APP}.<br><br>Você está recebendo este e-mail porque está cadastrado no banco de dados da empresa ${process.env.APP}. Nenhum e-mail enviado pela empresa ${process.env.APP} tem arquivos anexados ou solicita o preenchimento de senhas e informações cadastrais.<br><br>`, // Conteúdo do e-mail com HTML
-      };
-
-      // Enviar e-mail
-      transporter.sendMail(message_content, function (err) {
-        if (err) {
-          console.log(`Erro ao enviar e-mail:\n\n${err}`);
-          // Retornar a resposta de erro
-          res.status(200).json({
-            message: `E-mail não enviado, tente novamente ou contate ${process.env.EMAIL_ADM}`,
-          });
-          return;
-        } else {
-          // Retornar a resposta de sucesso
-          res.status(200).json({
-            message: "E-mail enviado! Verifique sua caixa de entrada.",
-            urlRecoverPassword: recover_passwd_link,
-          });
-          return;
-        }
-      });
-    } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        // Retornar erros de validação
-        res.status(400).json({
-          message: error.errors,
+      } else {
+        // Retornar a resposta de sucesso
+        res.status(200).json({
+          message: "E-mail enviado! Verifique sua caixa de entrada.",
+          urlRecoverPassword: recover_passwd_link,
         });
         return;
       }
-      // Retornar erro em caso de falha
-      //console.log(error);
-      res.status(500).json({
-        message: "Erro ao recuperar a senha!",
+    });
+  } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      // Retornar erros de validação
+      res.status(400).json({
+        message: error.errors,
       });
+      return;
     }
-  },
-);
+    // Retornar erro em caso de falha
+    //console.log(error);
+    res.status(500).json({
+      message: "Erro ao recuperar a senha!",
+    });
+  }
+});
 
 // Criar a rota para validar a chave recuperar a senha
 // Endereço para acessar a api através da aplicação externa com o verbo POST:http://localhost:8080/validate-recover-password
@@ -183,7 +180,7 @@ router.post(
 
 router.post(
   "/validate-recover-password",
-  async (req: Request<{ id: string }>, res: Response) => {
+  async (req: Request, res: Response) => {
     try {
       // Receber os dados enviados no corpo da requisição
       var data = req.body;
@@ -236,6 +233,91 @@ router.post(
     }
   },
 );
+
+// Criar a rota para atualizar a senha
+// Endereço para acessar a api através da aplicação externa com o verbo POST:http://localhost:8080/update-password
+// A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
+// Dados em formato de objeto
+/*
+{
+  "recoverPassword": "chave-recuperar-senha",
+  "email": "cesar@celke.com.br",
+  "password": "123456A#"
+}
+*/
+
+router.put("/update-password", async (req: Request, res: Response) => {
+  try {
+    // Receber os dados enviados no corpo da requisição
+    var data = req.body;
+
+    // Validar os dados utilizando o yup
+    const schema = yup.object().shape({
+      recoverPassword: yup.string().required("A chave é obrigatória!"),
+      email: yup
+        .string()
+        .email("E-mail inválido!")
+        .required("O campo e-mail é obrigatório!"),
+      password: yup
+        .string()
+        .required("O campo senha é obrigatório!")
+        .min(6, "O campo senha deve ter no mínimo 6 caracteres!")
+        .max(128, "A senha deve ter no máximo 128 caracteres!")
+        .matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula!")
+        .matches(/[0-9]/, "A senha deve conter pelo menos um número!")
+        .matches(
+          /[^A-Za-z0-9]/,
+          "A senha deve conter pelo menos um caractere especial!",
+        ),
+    });
+
+    // Verificar se os dados passaram pela validação
+    await schema.validate(data, { abortEarly: false });
+
+    // Obter o repositório da entidade User
+    const userRepository = AppDataSource.getRepository(User);
+
+    // Buscar o usuário no banco de dados pelo email e recoverPassword
+    const user = await userRepository.findOneBy({
+      email: data.email,
+      recoverPassword: data.recoverPassword,
+    });
+
+    // Verificar se o usuário foi encontrado
+    if (!user) {
+      res.status(404).json({ message: "Chave recuperar senha inválida!" });
+      return;
+    }
+
+    // Atribuir valor nulo para a coluna recoverPassword
+    data.recoverPassword = null;
+
+    // Atualizar os dados do usuário
+    userRepository.merge(user, data);
+
+    // Salvar as alterações no banco de dados
+    await userRepository.save(user);
+
+    // Retornar a resposta de sucesso
+    res.status(200).json({
+      message: "Senha atualizada com sucesso!",
+    });
+    return;
+  } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      // Retornar erros de validação
+      res.status(400).json({
+        message: error.errors,
+      });
+      return;
+    }
+    // Retornar erro em caso de falha
+    //console.log(error);
+    res.status(500).json({
+      message: "Erro ao editar senha!",
+    });
+  }
+});
 
 // Exportar a instrução que está dentro da constante router
 export default router;

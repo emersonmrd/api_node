@@ -10,8 +10,6 @@ import { PaginationService } from "../services/PaginationService.js";
 import * as yup from "yup";
 // Importar o NOT do typeorm
 import { Not } from "typeorm";
-// Importar a biblioteca para criptografar a senha
-import bcrypt from "bcryptjs";
 // Importar o middleware de autenticação
 import { verifyToken } from "../middlewares/authMiddleware.js";
 
@@ -151,9 +149,6 @@ router.post("/users", verifyToken, async (req: Request, res: Response) => {
       return;
     }
 
-    // Criptografar a senha antes de salvar
-    data.password = await bcrypt.hash(data.password, 10);
-
     // Criar um novo regitro de usuário (dados simulados)
     const newUser = userRepository.create(data);
 
@@ -235,9 +230,6 @@ router.put(
         res.status(404).json({ message: "Usuário não encontrado!" });
         return;
       }
-
-      // Criptografar a senha antes de salvar
-      data.password = await bcrypt.hash(data.password, 10);
 
       // Atualizar os dados do usuário
       userRepository.merge(user, data);
