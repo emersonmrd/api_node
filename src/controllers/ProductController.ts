@@ -12,12 +12,15 @@ import * as yup from "yup";
 import slugify from "slugify";
 // Importar o NOT do typeorm
 import { Not } from "typeorm";
+// Importar o middleware de autenticação
+import { verifyToken } from "../middlewares/authMiddleware.js";
+
 // Criar a aplicação Express
 const router = express.Router();
 
 // Criar a rota para listar os produtos
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/products?page=1&limit=10
-router.get("/products", async (req: Request, res: Response) => {
+router.get("/products", verifyToken, async (req: Request, res: Response) => {
   try {
     // Obter o repositório da entidade Product
     const productRepository = AppDataSource.getRepository(Product);
@@ -52,6 +55,7 @@ router.get("/products", async (req: Request, res: Response) => {
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/products/:id
 router.get(
   "/products/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID do produto a partir dos parâmetros da requisição
@@ -97,7 +101,7 @@ router.get(
     "category": 1
 }
 */
-router.post("/products", async (req: Request, res: Response) => {
+router.post("/products", verifyToken, async (req: Request, res: Response) => {
   try {
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
@@ -211,6 +215,7 @@ router.post("/products", async (req: Request, res: Response) => {
 */
 router.put(
   "/products/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição
@@ -331,6 +336,7 @@ router.put(
 // Endereço para acessar a API através da aplicação externa com o verbo DELETE: http://localhost:8080/products/:id
 router.delete(
   "/products/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID do produto a partir dos parâmetros da requisição

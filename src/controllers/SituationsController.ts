@@ -10,13 +10,15 @@ import { PaginationService } from "../services/PaginationService.js";
 import * as yup from "yup";
 // Importar o NOT do typeorm
 import { Not } from "typeorm";
+// Importar o middleware de autenticação
+import { verifyToken } from "../middlewares/authMiddleware.js";
 
 // Criar a aplicação Express
 const router = express.Router();
 
 // Criar a rota para listar as situações
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/situations?page=1&limit=1
-router.get("/situations", async (req: Request, res: Response) => {
+router.get("/situations", verifyToken, async (req: Request, res: Response) => {
   try {
     // Obter o repositório da entidade Situation
     const situationRepository = AppDataSource.getRepository(Situation);
@@ -52,6 +54,7 @@ router.get("/situations", async (req: Request, res: Response) => {
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/situations/:id
 router.get(
   "/situations/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição
@@ -94,7 +97,7 @@ router.get(
   "nameSituation": "Ativo",
 }
 */
-router.post("/situations", async (req: Request, res: Response) => {
+router.post("/situations", verifyToken, async (req: Request, res: Response) => {
   try {
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
@@ -165,6 +168,7 @@ router.post("/situations", async (req: Request, res: Response) => {
 */
 router.put(
   "/situations/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição
@@ -244,6 +248,7 @@ router.put(
 
 router.delete(
   "/situations/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição

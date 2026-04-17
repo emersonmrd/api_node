@@ -10,49 +10,56 @@ import { PaginationService } from "../services/PaginationService.js";
 import * as yup from "yup";
 // Importar o NOT do typeorm
 import { Not } from "typeorm";
+// Importar o middleware de autenticação
+import { verifyToken } from "../middlewares/authMiddleware.js";
 
 // Criar a aplicação Express
 const router = express.Router();
 
 // Criar a rota para listar as categorias dos produtos
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/product-categories?page=1&limit=1
-router.get("/product-categories", async (req: Request, res: Response) => {
-  try {
-    // Obter o repositório da entidade ProductCategory
-    const productCategoryRepository =
-      AppDataSource.getRepository(ProductCategory);
+router.get(
+  "/product-categories",
+  verifyToken,
+  async (req: Request, res: Response) => {
+    try {
+      // Obter o repositório da entidade ProductCategory
+      const productCategoryRepository =
+        AppDataSource.getRepository(ProductCategory);
 
-    // Receber o número da página e definir página 1 como padrão
-    const page = Number(req.query.page) || 1;
+      // Receber o número da página e definir página 1 como padrão
+      const page = Number(req.query.page) || 1;
 
-    // Definir o limite de registros por página
-    const limit = Number(req.query.limit) || 10;
+      // Definir o limite de registros por página
+      const limit = Number(req.query.limit) || 10;
 
-    // Usar o serviço de paginação
-    const result = await PaginationService.paginate(
-      productCategoryRepository,
-      page,
-      limit,
-      { id: "DESC" },
-    );
+      // Usar o serviço de paginação
+      const result = await PaginationService.paginate(
+        productCategoryRepository,
+        page,
+        limit,
+        { id: "DESC" },
+      );
 
-    // Retorna a resposta com os dados e informações da paginação
-    res.status(200).json({ result });
-    return;
-  } catch (error) {
-    // Retornar erro em caso de falha
-    //console.log(error);
-    res.status(500).json({
-      message: "Erro ao listar as categorias!",
-    });
-    return;
-  }
-});
+      // Retorna a resposta com os dados e informações da paginação
+      res.status(200).json({ result });
+      return;
+    } catch (error) {
+      // Retornar erro em caso de falha
+      //console.log(error);
+      res.status(500).json({
+        message: "Erro ao listar as categorias!",
+      });
+      return;
+    }
+  },
+);
 
 // Criar a rota para visualizar uma categoria específica
 // Endereço para acessar a API através da aplicação externa com o verbo GET: http://localhost:8080/product-categories/:id
 router.get(
   "/product-categories/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da categoria a partir dos parâmetros da requisição
@@ -96,66 +103,71 @@ router.get(
   "name": "Casa",
 }
 */
-router.post("/product-categories", async (req: Request, res: Response) => {
-  try {
-    // Receber os dados enviados no corpo da requisição
-    var data = req.body;
+router.post(
+  "/product-categories",
+  verifyToken,
+  async (req: Request, res: Response) => {
+    try {
+      // Receber os dados enviados no corpo da requisição
+      var data = req.body;
 
-    // Validar os dados utilizando o yup
-    const schema = yup.object().shape({
-      name: yup
-        .string()
-        .required("O campo nome é obrigatório!")
-        .min(3, "O campo nome deve ter no mínimo 3 caracteres!"),
-    });
-
-    // Verificar se os dados passaram pela validação
-    await schema.validate(data, { abortEarly: false });
-
-    // Criar uma instância do repositório de ProductCategory
-    const productCategoryRepository =
-      AppDataSource.getRepository(ProductCategory);
-
-    // Recuperar o registro do banco de dados com o valor da coluna name
-    const existingProductCategory = await productCategoryRepository.findOne({
-      where: { name: data.name },
-    });
-
-    //Verfiicar se já eixste uma categoria de produto com o mesmo nome
-    if (existingProductCategory) {
-      // Retornar resposta
-      res.status(400).json({
-        message: "Já existe uma categoria de produto cadastrada com esse nome!",
+      // Validar os dados utilizando o yup
+      const schema = yup.object().shape({
+        name: yup
+          .string()
+          .required("O campo nome é obrigatório!")
+          .min(3, "O campo nome deve ter no mínimo 3 caracteres!"),
       });
-      return;
-    }
 
-    // Criar um novo registro de Categoria (dados simulados)
-    const newProductCategory = productCategoryRepository.create(data);
+      // Verificar se os dados passaram pela validação
+      await schema.validate(data, { abortEarly: false });
 
-    // Salvar o registro no banco
-    await productCategoryRepository.save(newProductCategory);
+      // Criar uma instância do repositório de ProductCategory
+      const productCategoryRepository =
+        AppDataSource.getRepository(ProductCategory);
 
-    // Retornar resposta de sucesso
-    res.status(201).json({
-      message: "Categoria cadastrada com sucesso!",
-      name: newProductCategory,
-    });
-  } catch (error) {
-    if (error instanceof yup.ValidationError) {
-      // Retornar erros de validação
-      res.status(400).json({
-        message: error.errors,
+      // Recuperar o registro do banco de dados com o valor da coluna name
+      const existingProductCategory = await productCategoryRepository.findOne({
+        where: { name: data.name },
       });
-      return;
+
+      //Verfiicar se já eixste uma categoria de produto com o mesmo nome
+      if (existingProductCategory) {
+        // Retornar resposta
+        res.status(400).json({
+          message:
+            "Já existe uma categoria de produto cadastrada com esse nome!",
+        });
+        return;
+      }
+
+      // Criar um novo registro de Categoria (dados simulados)
+      const newProductCategory = productCategoryRepository.create(data);
+
+      // Salvar o registro no banco
+      await productCategoryRepository.save(newProductCategory);
+
+      // Retornar resposta de sucesso
+      res.status(201).json({
+        message: "Categoria cadastrada com sucesso!",
+        name: newProductCategory,
+      });
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        // Retornar erros de validação
+        res.status(400).json({
+          message: error.errors,
+        });
+        return;
+      }
+      // Retornar erro em caso de falha
+      //console.log(error);
+      res.status(500).json({
+        message: "Erro ao cadastrar a categoria!",
+      });
     }
-    // Retornar erro em caso de falha
-    //console.log(error);
-    res.status(500).json({
-      message: "Erro ao cadastrar a categoria!",
-    });
-  }
-});
+  },
+);
 
 // Criar a rota para editar uma categoria
 // Endereço para acessar a API através da aplicação externa com o verbo PUT: http://localhost:8080/product-categories/:id
@@ -168,6 +180,7 @@ router.post("/product-categories", async (req: Request, res: Response) => {
 */
 router.put(
   "/product-categories/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da categoria a partir dos parâmetros da requisição
@@ -253,6 +266,7 @@ router.put(
 
 router.delete(
   "/product-categories/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da categoria do produto a partir dos parâmetros da requisição

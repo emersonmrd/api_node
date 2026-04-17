@@ -12,13 +12,15 @@ import * as yup from "yup";
 import { Not } from "typeorm";
 // Importar a biblioteca para criptografar a senha
 import bcrypt from "bcryptjs";
+// Importar o middleware de autenticação
+import { verifyToken } from "../middlewares/authMiddleware.js";
 
 // Criar a aplicação Express
 const router = express.Router();
 
 // Criar a rota para listar os usuarios
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/users?page=1&limit=1
-router.get("/users", async (req: Request, res: Response) => {
+router.get("/users", verifyToken, async (req: Request, res: Response) => {
   try {
     // Obter o repositório da entidade Situation
     const userRepository = AppDataSource.getRepository(User);
@@ -54,6 +56,7 @@ router.get("/users", async (req: Request, res: Response) => {
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/users/:id
 router.get(
   "/users/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição
@@ -99,7 +102,7 @@ router.get(
   "situation": 1
 }
 */
-router.post("/users", async (req: Request, res: Response) => {
+router.post("/users", verifyToken, async (req: Request, res: Response) => {
   try {
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
@@ -189,6 +192,7 @@ router.post("/users", async (req: Request, res: Response) => {
 */
 router.put(
   "/users-password/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição
@@ -274,6 +278,7 @@ router.put(
 */
 router.put(
   "/users/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID da situação a partir dos parâmetros da requisição
@@ -357,6 +362,7 @@ router.put(
 // Endereço para acessar a API através da aplicação externa com o verbo DELETE: http://localhost:8080/users/:id
 router.delete(
   "/users/:id",
+  verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
       // Obter o ID do usuário a partir dos parâmetros da requisição
