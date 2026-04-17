@@ -170,5 +170,72 @@ router.post(
   },
 );
 
+// Criar a rota para validar a chave recuperar a senha
+// Endereço para acessar a api através da aplicação externa com o verbo POST:http://localhost:8080/validate-recover-password
+// A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
+// Dados em formato de objeto
+/*
+{
+  "recoverPassword": "chave-recuperar-senha",
+  "email": "cesar@celke.com.br"
+}
+*/
+
+router.post(
+  "/validate-recover-password",
+  async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      // Receber os dados enviados no corpo da requisição
+      var data = req.body;
+
+      // Validar os dados utilizando o yup
+      const schema = yup.object().shape({
+        recoverPassword: yup.string().required("A chave é obrigatória!"),
+        email: yup
+          .string()
+          .email("E-mail inválido!")
+          .required("O campo e-mail é obrigatório!"),
+      });
+
+      // Verificar se os dados passaram pela validação
+      await schema.validate(data, { abortEarly: false });
+
+      // Obter o repositório da entidade User
+      const userRepository = AppDataSource.getRepository(User);
+
+      // Buscar o usuário no banco de dados pelo email e recoverPassword
+      const user = await userRepository.findOneBy({
+        email: data.email,
+        recoverPassword: data.recoverPassword,
+      });
+
+      // Verificar se o usuário foi encontrado
+      if (!user) {
+        res.status(404).json({ message: "Chave recuperar senha inválida!" });
+        return;
+      }
+
+      // Retornar a resposta de sucesso
+      res.status(200).json({
+        message: "Chave recuperar senha válida!",
+      });
+      return;
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        // Retornar erros de validação
+        res.status(400).json({
+          message: error.errors,
+        });
+        return;
+      }
+      // Retornar erro em caso de falha
+      //console.log(error);
+      res.status(500).json({
+        message: "Chave recuperar senha inválida!",
+      });
+    }
+  },
+);
+
 // Exportar a instrução que está dentro da constante router
 export default router;
