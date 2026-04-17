@@ -26,6 +26,9 @@ export class User {
   @Column({ type: "varchar" })
   password!: string;
 
+  @Column({ type: "varchar", unique: true })
+  recoverPassword!: string;
+
   // Relacionamento ManyToOne com a tabela situations
   @ManyToOne(() => Situation, (situation) => situation.users)
   @JoinColumn({ name: "situationId" }) // Nome da chave estrangeira
