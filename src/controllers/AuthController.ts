@@ -7,14 +7,15 @@ import { User } from "../entity/User.js";
 // Importar a biblioteca para validar os dados para cadastrar e editar.
 import * as yup from "yup";
 // Importar a biblioteca para gerar a chave recuperar senha
-import crypto from "crypto";
+import crypto, { verify } from "crypto";
 // Importar o serviço de autenticação, responsável por validar o login do usuário
 import { AuthService } from "../services/AuthService.js";
 // Importar a biblioteca para enviar e-mail
 import nodemailer from "nodemailer";
 // Importar a biblioteca variáveis de ambiente
 import "dotenv/config";
-
+// Importar o middleware de autenticação
+import { verifyToken } from "../middlewares/authMiddleware.js";
 // Criar a aplicação Express
 const router = express.Router();
 
@@ -61,6 +62,16 @@ router.post("/", async (req: Request, res: Response) => {
       .json({ message: error.message || "Erro ao realizar o login!" });
     return;
   }
+});
+
+// Criar a rota para validar o token
+// Endereço para acessar a api através da aplicação externa com o verbo Get:http://localhost:8080/validate-token
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
+router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
+  res.status(200).json({
+    message: "Token válido",
+    userId: (req as any).user.id, // O ID do usuário autenticado
+  });
 });
 
 // Criar a rota para recuperar a senha
