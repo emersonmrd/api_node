@@ -43,7 +43,7 @@ export default class CreateProductsSeed {
     });
 
     // Verificar se encontrou a categoria no banco de dados
-    if (!situation) {
+    if (!category) {
       console.error(
         "Erro: Nenhuma categoria encontrada com ID 1. Verifique se a tabela 'product_categories' está populada.",
       );

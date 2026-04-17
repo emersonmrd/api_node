@@ -20,6 +20,6 @@ export class ProductSituation {
   updatedAt!: Date;
 
   // Use strings ao invés de classes
-  @OneToMany("Product", "product")
+  @OneToMany("Product", "products")
   products!: Product[];
 }
