@@ -20,6 +20,7 @@ const router = express.Router();
 
 // Criar a rota para listar os produtos
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/products?page=1&limit=10
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.get("/products", verifyToken, async (req: Request, res: Response) => {
   try {
     // Obter o repositório da entidade Product
@@ -53,6 +54,7 @@ router.get("/products", verifyToken, async (req: Request, res: Response) => {
 
 // Rota para visualizar um produto específico
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/products/:id
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.get(
   "/products/:id",
   verifyToken,
@@ -89,6 +91,7 @@ router.get(
 
 // Criar a rota para cadastrar produto
 // Endereço para acessar a api através da aplicação externa com o verbo POST: http://localhost:8080/products
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 // A aplicação externa deve indicar que está enviado os dados em formato de objeto: Content-Type: application/json
 // Dados em formato de objeto
 /*
@@ -177,12 +180,12 @@ router.post("/products", verifyToken, async (req: Request, res: Response) => {
     const newProduct = productRepository.create(data);
 
     // Salvar o registro no banco de dados
-    await productRepository.save(newProduct);
+    const product = await productRepository.save(newProduct);
 
     // Retornar resposta de sucesso
     res.status(201).json({
       message: "Produto cadastrado com sucesso!",
-      product: newProduct,
+      product,
     });
   } catch (error) {
     if (error instanceof yup.ValidationError) {
@@ -202,6 +205,7 @@ router.post("/products", verifyToken, async (req: Request, res: Response) => {
 
 // Criar a rota para editar um produto
 // Endereço para acessar a API através da aplicação externa com o verbo PUT: http://localhost:8080/products/:id
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 // A aplicação externa deve indicar que está enviado os dados em formato de objeto: Content-Type: application/json
 // Dados em formato de objeto
 /*
@@ -334,6 +338,7 @@ router.put(
 
 // Criar a rota para apagar um produto
 // Endereço para acessar a API através da aplicação externa com o verbo DELETE: http://localhost:8080/products/:id
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.delete(
   "/products/:id",
   verifyToken,

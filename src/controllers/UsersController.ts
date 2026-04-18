@@ -18,6 +18,7 @@ const router = express.Router();
 
 // Criar a rota para listar os usuarios
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/users?page=1&limit=1
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.get("/users", verifyToken, async (req: Request, res: Response) => {
   try {
     // Obter o repositório da entidade Situation
@@ -52,6 +53,7 @@ router.get("/users", verifyToken, async (req: Request, res: Response) => {
 
 // Rota para visualizar um usuário específico
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/users/:id
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.get(
   "/users/:id",
   verifyToken,
@@ -90,6 +92,7 @@ router.get(
 
 // Criar a rota para cadastrar o usuário
 // Endereço para acessar a api através da aplicação externa com o verbo POST: http://localhost:8080/users
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 // A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
 //Dados em formato de objeto
 /*
@@ -153,12 +156,12 @@ router.post("/users", verifyToken, async (req: Request, res: Response) => {
     const newUser = userRepository.create(data);
 
     // Salvar o registro no banco
-    await userRepository.save(newUser);
+    const user = await userRepository.save(newUser);
 
     // Retornar resposta de sucesso
     res.status(201).json({
       message: "Usuário cadastrado com sucesso!",
-      user: newUser,
+      user,
     });
   } catch (error) {
     if (error instanceof yup.ValidationError) {
@@ -178,6 +181,7 @@ router.post("/users", verifyToken, async (req: Request, res: Response) => {
 
 // Criar a rota para editar senha do usuário
 // Endereço para acessar a API através da aplicação externa com o verbo PUT: http://localhost:8080/users-password/:id
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 // A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
 //Dados em formato de objeto
 /*
@@ -259,6 +263,7 @@ router.put(
 
 // Criar a rota para editar o usuário
 // Endereço para acessar a api através da aplicação externa com o verbo PUT: http://localhost:8080/users/:id
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 // A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
 //Dados em formato de objeto
 /*
@@ -352,6 +357,7 @@ router.put(
 
 // Criar a rota para apagar um usuário
 // Endereço para acessar a API através da aplicação externa com o verbo DELETE: http://localhost:8080/users/:id
+//  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.delete(
   "/users/:id",
   verifyToken,

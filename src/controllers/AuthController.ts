@@ -16,6 +16,7 @@ import nodemailer from "nodemailer";
 import "dotenv/config";
 // Importar o middleware de autenticação
 import { verifyToken } from "../middlewares/authMiddleware.js";
+
 // Criar a aplicação Express
 const router = express.Router();
 
@@ -72,6 +73,95 @@ router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
     message: "Token válido",
     userId: (req as any).user.id, // O ID do usuário autenticado
   });
+});
+
+// Criar a rota pública para cadastrar usuário
+// Endereço para acessar a api através da aplicação externa com o verbo POST:http://localhost:8080/new-users
+// A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
+// Dados em formato de objeto
+/*
+{
+  "name": "Cesar",
+  "email": "cesar@celke.com.br",
+  "password": "123456A#",
+  "situation": 1
+}
+*/
+
+router.post("/new-users", async (req: Request, res: Response) => {
+  try {
+    // Receber os dados enviados no corpo da requisição
+    var data = req.body;
+
+    // Validar os dados utilizando o yup
+    const schema = yup.object().shape({
+      name: yup
+        .string()
+        .required("O campo nome é obrigatório!")
+        .min(3, "O campo nome deve ter no mínimo 3 caracteres!"),
+      email: yup
+        .string()
+        .email("E-mail inválido!")
+        .required("O campo e-mail é obrigatório!"),
+      password: yup
+        .string()
+        .required("O campo senha é obrigatório!")
+        .min(6, "O campo senha deve ter no mínimo 6 caracteres!")
+        .max(128, "A senha deve ter no máximo 128 caracteres!")
+        .matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula!")
+        .matches(/[0-9]/, "A senha deve conter pelo menos um número!")
+        .matches(
+          /[^A-Za-z0-9]/,
+          "A senha deve conter pelo menos um caractere especial!",
+        ),
+      situation: yup.number().required("O campo situação é obrigatório!"),
+    });
+
+    // Verificar se os dados passaram pela validação
+    await schema.validate(data, { abortEarly: false });
+
+    // Criar uma instância do repositório de User
+    const userRepository = AppDataSource.getRepository(User);
+
+    // Recuperar o registro do banco de dados com o valor da coluna email
+    const existingUser = await userRepository.findOne({
+      where: { email: data.email },
+    });
+
+    //Verfiicar se já eixste um usuário com o mesmo e-mail
+    if (existingUser) {
+      // Retornar resposta
+      res.status(400).json({
+        message: "Já existe um usuário cadastrado com esse e-mail!",
+      });
+      return;
+    }
+
+    // Criar um novo regitro de usuário (dados simulados)
+    const newUser = userRepository.create(data);
+
+    // Salvar o registro no banco
+    const user = await userRepository.save(newUser);
+
+    // Retornar resposta de sucesso
+    res.status(201).json({
+      message: "Usuário cadastrado com sucesso!",
+      user,
+    });
+  } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      // Retornar erros de validação
+      res.status(400).json({
+        message: error.errors,
+      });
+      return;
+    }
+    // Retornar erro em caso de falha
+    //console.log(error);
+    res.status(500).json({
+      message: "Erro ao cadastrar usuário!",
+    });
+  }
 });
 
 // Criar a rota para recuperar a senha
