@@ -33,7 +33,7 @@ export class Product {
   @JoinColumn({ name: "productSituationId" }) // Nome da chave estrangeira
   situation!: ProductSituation;
 
-  // Relacionamento ManyToOne com a tabela product_situations
+  // Relacionamento ManyToOne com a tabela product_categories
   @ManyToOne(
     () => ProductCategory,
     (productCategory) => productCategory.products,

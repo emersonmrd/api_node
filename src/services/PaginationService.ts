@@ -7,6 +7,7 @@ interface PaginationResult<T> {
   currentPage: number;
   lastPage: number;
   totalRecords: number;
+  relations?: string[]; // Permite passar relações como array de strings
 }
 
 // Define uma classe de serviço para implementar a lo´gica de paginação
@@ -17,6 +18,7 @@ export class PaginationService {
     page: number = 1,
     limit: number = 10,
     order: FindOptionsOrder<T> = {},
+    relations?: string[] // Receber 'relations' como array de strings
   ): Promise<PaginationResult<T>> {
     // Conta o total de registros no repositório para determinar a quantidade total de páginas
     const totalRecords = await repository.count();
@@ -37,6 +39,7 @@ export class PaginationService {
       take: limit,
       skip: offset,
       order,
+      ...(relations && { relations }),
     });
 
     // Retorna o resultado da paginação em um formato estruturado

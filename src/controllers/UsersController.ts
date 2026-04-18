@@ -36,6 +36,7 @@ router.get("/users", verifyToken, async (req: Request, res: Response) => {
       page,
       limit,
       { id: "DESC" },
+      ["situation"],
     );
 
     // Retorna a resposta com os dados e informações da paginação
@@ -66,8 +67,9 @@ router.get(
       const userRepository = AppDataSource.getRepository(User);
 
       // Buscar o usuario no banco de dados pelo ID
-      const user = await userRepository.findOneBy({
-        id: parseInt(id),
+      const user = await userRepository.findOne({
+        relations: ["situation"],
+        where: { id: parseInt(id) },
       });
 
       // Verificar se a situação foi encontrada

@@ -38,6 +38,7 @@ router.get("/products", verifyToken, async (req: Request, res: Response) => {
       page,
       limit,
       { id: "DESC" },
+      ["situation", "category"],
     );
 
     // Retornar a resposta com os dados e informações da paginação
@@ -67,7 +68,10 @@ router.get(
       const productRepository = AppDataSource.getRepository(Product);
 
       // Buscar o produto no banco de dados pelo ID
-      const product = await productRepository.findOneBy({ id: parseInt(id) });
+      const product = await productRepository.findOne({
+        relations: ["situation", "category"],
+        where: { id: parseInt(id) },
+      });
 
       // Verificar se o produto foi encontrado
       if (!product) {
