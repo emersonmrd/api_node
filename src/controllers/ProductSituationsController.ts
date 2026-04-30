@@ -16,7 +16,7 @@ import { verifyToken } from "../middlewares/authMiddleware.js";
 // Criar a aplicação Express
 const router = express.Router();
 
-// Criar a rota para lista as situações dos produtos
+// Criar a rota para listar as situações dos produtos
 // Endereço para acessar a api através da aplicação externa com o verbo GET: http://localhost:8080/product-situations?page=1&limit=1
 //  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.get(

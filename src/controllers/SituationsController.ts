@@ -39,7 +39,7 @@ router.get("/situations", verifyToken, async (req: Request, res: Response) => {
     );
 
     // Retorna a resposta com os dados e informações da paginação
-    res.status(200).json(result);
+    res.status(200).json({ result });
     return;
   } catch (error) {
     // Retornar erro em caso de falha
