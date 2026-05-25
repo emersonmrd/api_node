@@ -32,6 +32,12 @@ const router = express.Router();
 */
 router.post("/", async (req: Request, res: Response) => {
   try {
+    // função para aguardar um determinado tempo (3 segundos)
+    // const delay = (ms: number) =>
+    //   new Promise((resolve) => setTimeout(resolve, ms));
+
+    // await delay(3000);
+
     // Extrair `email` e `password` do corpo da requisição
     const { email, password } = req.body;
 
@@ -90,6 +96,12 @@ router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
 
 router.post("/new-users", async (req: Request, res: Response) => {
   try {
+    // função para aguardar um determinado tempo (3 segundos)
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+
+    await delay(3000);
+
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
 
@@ -177,6 +189,12 @@ router.post("/new-users", async (req: Request, res: Response) => {
 
 router.post("/recover-password", async (req: Request, res: Response) => {
   try {
+    // função para aguardar um determinado tempo (3 segundos)
+    // const delay = (ms: number) =>
+    //   new Promise((resolve) => setTimeout(resolve, ms));
+
+    // await delay(3000);
+
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
 
@@ -283,6 +301,12 @@ router.post(
   "/validate-recover-password",
   async (req: Request, res: Response) => {
     try {
+      // função para aguardar um determinado tempo (3 segundos)
+      // const delay = (ms: number) =>
+      //   new Promise((resolve) => setTimeout(resolve, ms));
+
+      // await delay(3000);
+
       // Receber os dados enviados no corpo da requisição
       var data = req.body;
 

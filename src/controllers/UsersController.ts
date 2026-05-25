@@ -92,7 +92,7 @@ router.get(
   },
 );
 
-// Criar a rota para cadastrar o usuário
+// Criar a rota restrita para cadastrar o usuário
 // Endereço para acessar a api através da aplicação externa com o verbo POST: http://localhost:8080/users
 //  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 // A aplicação externa deve indicar que está enviando os dados em formato de objeto: Content-Type: application/json
