@@ -23,6 +23,11 @@ const router = express.Router();
 //  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
 router.get("/products", verifyToken, async (req: Request, res: Response) => {
   try {
+    // função para aguardar um determinado tempo (3 segundos)
+    // const delay = (ms: number) =>
+    //   new Promise((resolve) => setTimeout(resolve, ms));
+
+    // await delay(3000);
     // Obter o repositório da entidade Product
     const productRepository = AppDataSource.getRepository(Product);
 
@@ -61,6 +66,11 @@ router.get(
   verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
+      // função para aguardar um determinado tempo (3 segundos)
+      // const delay = (ms: number) =>
+      //   new Promise((resolve) => setTimeout(resolve, ms));
+
+      // await delay(3000);
       // Obter o ID do produto a partir dos parâmetros da requisição
       const { id } = req.params;
 
@@ -110,6 +120,11 @@ router.get(
 */
 router.post("/products", verifyToken, async (req: Request, res: Response) => {
   try {
+    // função para aguardar um determinado tempo (3 segundos)
+    // const delay = (ms: number) =>
+    //   new Promise((resolve) => setTimeout(resolve, ms));
+
+    // await delay(3000);
     // Receber os dados enviados no corpo da requisição
     var data = req.body;
 
@@ -226,6 +241,12 @@ router.put(
   verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
+      // função para aguardar um determinado tempo (3 segundos)
+      // const delay = (ms: number) =>
+      //   new Promise((resolve) => setTimeout(resolve, ms));
+
+      // await delay(3000);
+
       // Obter o ID da situação a partir dos parâmetros da requisição
       const { id } = req.params;
 

@@ -97,10 +97,10 @@ router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
 router.post("/new-users", async (req: Request, res: Response) => {
   try {
     // função para aguardar um determinado tempo (3 segundos)
-    const delay = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
+    // const delay = (ms: number) =>
+    //   new Promise((resolve) => setTimeout(resolve, ms));
 
-    await delay(3000);
+    // await delay(3000);
 
     // Receber os dados enviados no corpo da requisição
     var data = req.body;

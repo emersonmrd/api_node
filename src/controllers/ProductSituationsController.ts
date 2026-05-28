@@ -24,6 +24,11 @@ router.get(
   verifyToken,
   async (req: Request, res: Response) => {
     try {
+      // função para aguardar um determinado tempo (3 segundos)
+      // const delay = (ms: number) =>
+      //   new Promise((resolve) => setTimeout(resolve, ms));
+
+      // await delay(3000);
       // Obter o repositório da entidade ProductSituation
       const productSituationRepository =
         AppDataSource.getRepository(ProductSituation);
@@ -64,6 +69,11 @@ router.get(
   verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
+      // função para aguardar um determinado tempo (3 segundos)
+      // const delay = (ms: number) =>
+      //   new Promise((resolve) => setTimeout(resolve, ms));
+
+      // await delay(3000);
       // Obter o ID da situação a partir dos parâmetros da requisição
       const { id } = req.params;
 
@@ -112,6 +122,11 @@ router.post(
   verifyToken,
   async (req: Request, res: Response) => {
     try {
+      // função para aguardar um determinado tempo (3 segundos)
+      // const delay = (ms: number) =>
+      //   new Promise((resolve) => setTimeout(resolve, ms));
+
+      // await delay(3000);
       // Receber os dados enviados no corpo da requisição
       var data = req.body;
 
@@ -191,6 +206,11 @@ router.put(
   verifyToken,
   async (req: Request<{ id: string }>, res: Response) => {
     try {
+      // função para aguardar um determinado tempo (3 segundos)
+      // const delay = (ms: number) =>
+      //   new Promise((resolve) => setTimeout(resolve, ms));
+
+      // await delay(3000);
       // Obter o ID da situação a partir dos parâmetros da requisição
       const { id } = req.params;
 
