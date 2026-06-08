@@ -13,6 +13,7 @@ import SituationsController from "./controllers/SituationsController.js";
 import ProductController from "./controllers/ProductController.js";
 import ProductSituationsController from "./controllers/ProductSituationsController.js";
 import ProductCategoriesController from "./controllers/ProductCategoriesController.js";
+import ReportsController from "./controllers/ReportsController.js";
 
 // Criar a aplicação Express
 const app = express();
@@ -31,6 +32,7 @@ app.use("/", SituationsController);
 app.use("/", ProductController);
 app.use("/", ProductSituationsController);
 app.use("/", ProductCategoriesController);
+app.use("/", ReportsController);
 
 // Iniciar o servidor na porta definida na variável de ambiente
 const app_porta = process.env.APP_PORT;

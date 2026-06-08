@@ -74,12 +74,21 @@ router.post("/", async (req: Request, res: Response) => {
 // Criar a rota para validar o token
 // Endereço para acessar a api através da aplicação externa com o verbo Get:http://localhost:8080/validate-token
 //  Enviar o Bearer Token do usupario logado, exemplo: Bearer <colocar-o-token-gerado-com-jwt>
-router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
-  res.status(200).json({
-    message: "Token válido",
-    userId: (req as any).user.id, // O ID do usuário autenticado
-  });
-});
+router.get(
+  "/validate-token",
+  verifyToken,
+  async (req: Request, res: Response) => {
+    // função para aguardar um determinado tempo (3 segundos)
+    // const delay = (ms: number) =>
+    //   new Promise((resolve) => setTimeout(resolve, ms));
+
+    // await delay(3000);
+    res.status(200).json({
+      message: "Token válido",
+      userId: (req as any).user.id, // O ID do usuário autenticado
+    });
+  },
+);
 
 // Criar a rota pública para cadastrar usuário
 // Endereço para acessar a api através da aplicação externa com o verbo POST:http://localhost:8080/new-users

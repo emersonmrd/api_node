@@ -198,6 +198,12 @@ Instalar os tipos do nodemailer.
 npm install --save-dev @types/nodemailer
 ```
 
+Instalar módulo para manipular a data
+
+```
+npm install date-fns
+```
+
 Compilar o arquivo TypeScript. Executar o arquivo gerado.
 
 ```
